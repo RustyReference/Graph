@@ -1,7 +1,6 @@
 package src;
 
 import java.util.*;
-import java.lang.reflect.*;
 
 public class UndirectedGraph<T> implements Graph<T> {
     private ArrayList<ArrayList<T>> adjList;
@@ -45,9 +44,9 @@ public class UndirectedGraph<T> implements Graph<T> {
         // 'second' values it is updated to make it so that they both
         // are verticies in the graph and have each other in their
         // adjacency lists.
-        updateLists(foundFirst, foundSecond,
-                    first, second,
-                    firstTemp, secondTemp);
+        updateListsAfterAdding(foundFirst, foundSecond,
+                               first, second,
+                               firstTemp, secondTemp);
     }
 
     /**
@@ -72,7 +71,7 @@ public class UndirectedGraph<T> implements Graph<T> {
      *                   involved in adding an edge, or null if 
      *                   the second argument is not found.
      */
-    private void updateLists(boolean foundFirst,
+    private void updateListsAfterAdding(boolean foundFirst,
                              boolean foundSecond,
                              T first,
                              T second,
@@ -122,7 +121,7 @@ public class UndirectedGraph<T> implements Graph<T> {
      *      Precondition: The graph is expected to be empty
      * @param vertex the vertex to delete
      */
-    public void delete(T vertex) {
+    public void deleteVertex(T vertex) {
         int size = adjList.size();
         if (size == 0)
             throw new IllegalStateException("Cannot delete from empty graph");
@@ -136,6 +135,20 @@ public class UndirectedGraph<T> implements Graph<T> {
                 while (currentList.contains(vertex)) {
                     currentList.remove(vertex);
                 }
+            }
+        }
+    }
+
+    
+    public void deleteEdge(T first, T second) {
+        for (ArrayList<T> list: adjList) {
+            T vertex = list.get(0);
+            if (vertex.equals(first) && list.contains(second)) {
+                list.remove(second);
+            }
+
+            if (vertex.equals(second) && list.contains(first)) {
+                list.remove(first);
             }
         }
     }
@@ -160,11 +173,6 @@ public class UndirectedGraph<T> implements Graph<T> {
     }
 
     public static void main(String[] args) {
-        UndirectedGraph<Integer> in = new UndirectedGraph<>();
-        in.add(1, 4);
-        System.out.println(in);
-
-        in.add(4, 1);
-        System.out.println(in);
+        
     }
 }
