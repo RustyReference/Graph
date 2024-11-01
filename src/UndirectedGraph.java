@@ -1,6 +1,7 @@
 package src;
 
 import java.util.*;
+import lib.DFSException;
 
 public class UndirectedGraph<T> implements Graph<T> {
     private ArrayList<ArrayList<T>> adjList;
@@ -149,6 +150,53 @@ public class UndirectedGraph<T> implements Graph<T> {
 
             if (vertex.equals(second) && list.contains(first)) {
                 list.remove(first);
+            }
+        }
+    }
+
+    /**
+     * Traverses through the graph using depth-first search and prints each 
+     * iteration of the search
+     * @param start the vertex from which the search begins
+     */
+    public void DFS(T start) {
+        if (adjList.size() == 0) {
+            return;
+        }
+
+        HashMap<T, Boolean> visited = new HashMap<>();
+        StringBuilder compositeMessage = new StringBuilder();
+        for (ArrayList<T> list: adjList) {
+            visited.put(list.get(0), false);
+        }
+        
+        helperDFS(visited, start, compositeMessage);
+    }
+
+    private void helperDFS(HashMap<T, Boolean> visited, T current,
+                           StringBuilder message) {
+        // Set current vertex as visited
+        visited.put(current, true);
+        message.append(current.toString()).append(" ");
+
+        ArrayList<T> listToTraverse = new ArrayList<T>();
+        for (ArrayList<T> list: adjList) {
+            if (list.get(0).equals(current)) {
+                listToTraverse = list;
+                break;
+            }
+        }
+
+        if (listToTraverse.size() == 0) {
+            throw new DFSException("ArrayList containing vertex to traverse from should not be empty.");
+        }
+
+        for (int ind = 1; ind < listToTraverse.size(); ind++) {
+            T vertex = listToTraverse.get(ind);
+            if (!visited.get(vertex)) {
+                helperDFS(visited, vertex, message);
+            } else {
+                message.append("backtrack ");
             }
         }
     }

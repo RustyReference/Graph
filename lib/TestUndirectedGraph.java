@@ -2,20 +2,6 @@ package lib;
 
 import src.UndirectedGraph;
 
-class A {
-    private int a = 2;
-    public A(int i) {
-        a = i;
-    }
-    public void m(A another) {
-        System.out.println("THIS: " + a);
-        System.out.println("AND THIS: " + another.a);
-    }
-
-}
-
-
-
 public class TestUndirectedGraph {
     private static int numPassed;
     public static void testAddVertex() {
