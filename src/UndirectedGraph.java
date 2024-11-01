@@ -140,7 +140,13 @@ public class UndirectedGraph<T> implements Graph<T> {
         }
     }
 
-    
+    /**
+     * Deletes an edge between two verticies by removing their adjacencies
+     * to each other
+     * 
+     * @param first the first vertex involved
+     * @param second the second vertex involved
+     */
     public void deleteEdge(T first, T second) {
         for (ArrayList<T> list: adjList) {
             T vertex = list.get(0);
@@ -156,7 +162,7 @@ public class UndirectedGraph<T> implements Graph<T> {
 
     /**
      * Traverses through the graph using depth-first search and prints each 
-     * iteration of the search
+     * iteration of the search and each instance where the search back tracks
      * @param start the vertex from which the search begins
      */
     public void DFS(T start) {
@@ -170,10 +176,21 @@ public class UndirectedGraph<T> implements Graph<T> {
             visited.put(list.get(0), false);
         }
         
-        helperDFS(visited, start, compositeMessage);
+        helperDFS(visited, start, start, compositeMessage);
+        System.out.println(compositeMessage.toString());
     }
 
-    private void helperDFS(HashMap<T, Boolean> visited, T current,
+    /**
+     * Assists with the DFS traversal by recursively calling itself for each 
+     * vertex the current vertex is adjacent to. Backtracks when all adjacent
+     * verticies to the current vertex have been completely traversed
+     * @param visited a map showing which verticies have been visited
+     * @param current the current vertex being visited
+     * @param beginning the vertex the DFS traversal began in 
+     * @param message the StringBuilder that contains all nodes visited
+     *                all instances of backtracking.
+     */
+    private void helperDFS(HashMap<T, Boolean> visited, T current, T beginning,
                            StringBuilder message) {
         // Set current vertex as visited
         visited.put(current, true);
@@ -194,11 +211,13 @@ public class UndirectedGraph<T> implements Graph<T> {
         for (int ind = 1; ind < listToTraverse.size(); ind++) {
             T vertex = listToTraverse.get(ind);
             if (!visited.get(vertex)) {
-                helperDFS(visited, vertex, message);
-            } else {
-                message.append("backtrack ");
+                helperDFS(visited, vertex, beginning, message);
             }
         }
+
+        if (!current.equals(beginning))
+            message.append("backtrack ");
+        else message.append("End DFS");
     }
 
     /**

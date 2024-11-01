@@ -1,5 +1,8 @@
 package lib;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import src.UndirectedGraph;
 
 public class TestUndirectedGraph {
@@ -85,28 +88,77 @@ public class TestUndirectedGraph {
         numPassed++;
     }
 
+    public static void testDFS() {
+        UndirectedGraph<Integer> gph = new UndirectedGraph<>();
+        gph.add(0, 1);
+        gph.add(0, 2);
+        gph.add(1, 0);
+        gph.add(1, 3);
+        gph.add(2, 0);
+        gph.add(2, 3);
+        gph.add(3, 4);
+        gph.add(3, 5);
+        gph.add(4, 3);
+        gph.add(5, 3); 
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStr = new PrintStream(baos);
+        PrintStream originalStream = System.out;
+        System.setOut(printStr);
+    
+        gph.DFS(0);
+
+        System.out.flush();
+        System.setOut(originalStream);
+
+        // Trim to remove null terminator byte
+        String testDisplay = baos.toString().trim();
+        String expectedDisplay = "0 1 3 2 backtrack 4 backtrack 5 backtrack backtrack backtrack End DFS";
+        
+        assert testDisplay.equals(expectedDisplay);
+        numPassed++;
+         
+    }
+
+    private static void travStr(String f, String s) {
+        if (f.length() == s.length()) {
+            for (int i = 0; i < f.length(); i++) {
+                if (!f.substring(i, i + 1).equals(s.substring(i, i + 1))) {
+                    System.out.println("NOT EQUAL: f -> " + f.substring(i, i + 1) + " s -> " + s.substring(i, i + 1));
+                }
+            }
+        } else  {
+            System.out.println("Lengths not equal: " + "f -> " + f.length() + " s -> " + s.length());
+            System.out.println("f begins with " + f.substring(0, 1) + " s begins with " + s.substring(0, 1));
+            System.out.println("f ends with " + f.substring(f.length() - 1, f.length()) + " s begins with " + s.substring(s.length() - 1, s.length()));
+        }
+    }
+
     public static void main(String[] args) {
         //Tests
         /* 
          * 
          */
-         System.out.println("--------------------------");
-         System.out.println("Running Tests for UndirectedGraph:");
-         System.out.println("--------------------------\n");
+        System.out.println("--------------------------");
+        System.out.println("Running Tests for UndirectedGraph:");
+        System.out.println("--------------------------\n");
          
-         System.out.println("Testing addVertex();");
-         testAddVertex();
+        System.out.println("Testing addVertex();");
+        testAddVertex();
 
-         System.out.println("Testing removeVertex();");
-         testRemoveVertex();
+        System.out.println("Testing removeVertex();");
+        testRemoveVertex();
          
-         System.out.println("Testing repetition of addVertex()");
-         testRepeatAddVertex();
+        System.out.println("Testing repetition of addVertex()");
+        testRepeatAddVertex();
 
-         System.out.println("Testing adding an edge functionality");
-         testRemoveVertex();
+        System.out.println("Testing adding an edge functionality");
+        testRemoveVertex();
 
-         System.out.println("\nSuccessfully Passed " + numPassed + " tests.");
+        System.out.println("Testing DFS traversal");
+        testDFS();
+
+        System.out.println("\nSuccessfully Passed " + numPassed + " tests.");
 
     }
 }
