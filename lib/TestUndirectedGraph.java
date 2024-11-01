@@ -120,20 +120,6 @@ public class TestUndirectedGraph {
          
     }
 
-    private static void travStr(String f, String s) {
-        if (f.length() == s.length()) {
-            for (int i = 0; i < f.length(); i++) {
-                if (!f.substring(i, i + 1).equals(s.substring(i, i + 1))) {
-                    System.out.println("NOT EQUAL: f -> " + f.substring(i, i + 1) + " s -> " + s.substring(i, i + 1));
-                }
-            }
-        } else  {
-            System.out.println("Lengths not equal: " + "f -> " + f.length() + " s -> " + s.length());
-            System.out.println("f begins with " + f.substring(0, 1) + " s begins with " + s.substring(0, 1));
-            System.out.println("f ends with " + f.substring(f.length() - 1, f.length()) + " s begins with " + s.substring(s.length() - 1, s.length()));
-        }
-    }
-
     public static void main(String[] args) {
         //Tests
         /* 
