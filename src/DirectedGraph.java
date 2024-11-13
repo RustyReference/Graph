@@ -1,6 +1,9 @@
 package src;
 
+import java.lang.reflect.Array;
 import java.util.*;
+
+import lib.DFSException;
 
 public class DirectedGraph<T> implements Graph<T> {
     private ArrayList<ArrayList<T>> adjList;
@@ -106,5 +109,46 @@ public class DirectedGraph<T> implements Graph<T> {
                 return;
             }
         }
+    }
+
+    public void DFS(T start) {
+        HashMap<T, Boolean> visited = new HashMap<>();
+
+        for (ArrayList<T> list: adjList) {
+            visited.put(list.get(0), false);
+        }
+        
+        StringBuilder result = new StringBuilder();
+        helperDFS(visited, start, start, result);
+    }
+
+    private void helperDFS(HashMap<T, Boolean> visited, T curr, T beginning, 
+                           StringBuilder message) {
+        visited.put(curr, true);
+        message.append(curr.toString() + " ");
+
+        ArrayList<T> travList = new ArrayList<>();
+        for (ArrayList<T> list: adjList) {
+            if (list.get(0).equals(curr)) {
+                travList = list;
+                break;
+            }
+        }
+
+        if (travList.size() == 0) {
+            throw new DFSException(
+                "DirectedGraph: DFS traversal starting point does not exist.");
+        }
+
+        for (int i = 1; i < travList.size(); i++) {
+            T adjVertex = travList.get(i);
+            if (!visited.get(curr)) {
+                helperDFS(visited, adjVertex, beginning, message);
+            }
+        }
+
+        if (!curr.equals(beginning)) 
+            message.append("backtrack ");
+        else message.append("END DFS");
     }
 }

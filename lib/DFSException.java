@@ -5,3 +5,9 @@ public class DFSException extends RuntimeException {
         super(message);
     }
 }
+
+class BFSException extends RuntimeException {
+    public BFSException(String message) {
+        super(message);
+    }
+}

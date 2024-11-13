@@ -205,7 +205,8 @@ public class UndirectedGraph<T> implements Graph<T> {
         }
 
         if (listToTraverse.size() == 0) {
-            throw new DFSException("ArrayList containing vertex to traverse from should not be empty.");
+            throw new DFSException(
+                "DirectedGraph: DFS traversal starting point does not exist.");
         }
 
         for (int ind = 1; ind < listToTraverse.size(); ind++) {
