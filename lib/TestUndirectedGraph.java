@@ -120,6 +120,10 @@ public class TestUndirectedGraph {
          
     }
 
+    public static void testBFS() {
+        //Test the BFS travesal
+    }
+
     public static void main(String[] args) {
         //Tests
         /* 

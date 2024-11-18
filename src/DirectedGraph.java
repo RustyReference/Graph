@@ -151,4 +151,8 @@ public class DirectedGraph<T> implements Graph<T> {
             message.append("backtrack ");
         else message.append("END DFS");
     }
+
+    public void BFS(T start) {
+        // Implement BFS
+    }
 }

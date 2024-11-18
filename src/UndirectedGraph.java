@@ -1,6 +1,8 @@
 package src;
 
 import java.util.*;
+
+import lib.BFSException;
 import lib.DFSException;
 
 public class UndirectedGraph<T> implements Graph<T> {
@@ -206,7 +208,7 @@ public class UndirectedGraph<T> implements Graph<T> {
 
         if (listToTraverse.size() == 0) {
             throw new DFSException(
-                "DirectedGraph: DFS traversal starting point does not exist.");
+                "UndirectedGraph: DFS traversal starting point does not exist.");
         }
 
         for (int ind = 1; ind < listToTraverse.size(); ind++) {
@@ -238,6 +240,46 @@ public class UndirectedGraph<T> implements Graph<T> {
         }
 
         return sb.toString();
+    }
+
+    public void BFS(T start) {
+        // Implement BFS
+        HashMap<T, Boolean> visited = new HashMap<>();
+        Queue<T> q = new LinkedList<>();
+        StringBuilder message = new StringBuilder();
+
+        message.append(start.toString()).append(" ");
+        q.add(start);
+        visited.put(start, true);
+        while (!q.isEmpty()) {
+            T top = q.remove();
+            ArrayList<T> trav = new ArrayList<>();
+            for (ArrayList<T> list: adjList) {
+                if (list.get(0).equals(top)) {
+                    trav = list;
+                }
+            }
+
+            if (trav.size() == 0) {
+                throw new BFSException("UndirectedGraph: BFS traversal starting point does not exist.");
+            }
+
+            for (T neighbor: trav) {
+                message.append("| ");
+                if (neighbor.equals(top)) 
+                    continue;
+
+                if (visited.get(neighbor) == null) {
+                    message.append(neighbor.toString()).append(" ");
+                    q.add(neighbor);
+                    visited.put(neighbor, true);
+                }
+
+                message.append("| ");
+            }
+        }
+
+        System.out.println(message.toString());
     }
 
     public static void main(String[] args) {
