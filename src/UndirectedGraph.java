@@ -242,15 +242,15 @@ public class UndirectedGraph<T> implements Graph<T> {
         return sb.toString();
     }
 
-    public void BFS(T start) {
-        // Implement BFS
-        HashMap<T, Boolean> visited = new HashMap<>();
-        Queue<T> q = new LinkedList<>();
-        StringBuilder message = new StringBuilder();
+    public UndirectedGraph<T> BFS(T start) {
+        HashSet<T> visited = new HashSet<>();
+        UndirectedGraph<T> mst = new UndirectedGraph<>(); // Minimum spanning tree as adjacency list
 
-        message.append(start.toString()).append(" ");
+        Queue<T> q = new LinkedList<>();
+
         q.add(start);
-        visited.put(start, true);
+        visited.add(start);
+
         while (!q.isEmpty()) {
             T top = q.remove();
             ArrayList<T> trav = new ArrayList<>();
@@ -265,24 +265,34 @@ public class UndirectedGraph<T> implements Graph<T> {
             }
 
             for (T neighbor: trav) {
-                message.append("| ");
                 if (neighbor.equals(top)) 
                     continue;
-
-                if (visited.get(neighbor) == null) {
-                    message.append(neighbor.toString()).append(" ");
+                
+                if (!visited.contains(neighbor)) {
                     q.add(neighbor);
-                    visited.put(neighbor, true);
-                }
 
-                message.append("| ");
+                    // Add edge from current to neighbor to MST
+                    mst.add(top, neighbor);
+
+                    // Mark neighbor as visited
+                    visited.add(neighbor);
+                }
             }
         }
 
-        System.out.println(message.toString());
+        return mst;
     }
 
     public static void main(String[] args) {
-        
+        UndirectedGraph<Integer> g = new UndirectedGraph<>();
+        g.add(1, 2);
+        g.add(1, 3);
+        g.add(2, 3);
+        g.add(3, 4);
+
+        UndirectedGraph<Integer> mst = g.BFS(1);
+        System.out.println(g.toString());
+        System.out.println("MINIMUM");
+        System.out.println(mst.toString());
     }
 }

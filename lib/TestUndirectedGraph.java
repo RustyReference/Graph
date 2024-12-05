@@ -122,6 +122,35 @@ public class TestUndirectedGraph {
 
     public static void testBFS() {
         //Test the BFS travesal
+        UndirectedGraph<Integer> gph = new UndirectedGraph<>();
+        gph.add(1, 2);
+        gph.add(1, 3);
+
+        gph.add(2, 3);
+        gph.add(2, 4);
+
+        gph.add(3, 2);
+        gph.add(3,5);
+        gph.add(3,6);
+
+        gph.add(4,5);
+
+        // Redundantly add edge
+        gph.add(4,5);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStr = new PrintStream(baos);
+        PrintStream originalStream = System.out;
+        System.setOut(printStr);
+
+        System.out.flush();
+        System.setOut(originalStream);
+        
+        gph.BFS(1);
+
+        String testDisplay = baos.toString().trim();
+
+        System.out.println(testDisplay);
     }
 
     public static void main(String[] args) {
@@ -149,6 +178,9 @@ public class TestUndirectedGraph {
         testDFS();
 
         System.out.println("\nSuccessfully Passed " + numPassed + " tests.");
+
+        System.out.println("Testing BFS();");
+        testBFS();
 
     }
 }
