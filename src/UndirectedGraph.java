@@ -167,19 +167,16 @@ public class UndirectedGraph<T> implements Graph<T> {
      * iteration of the search and each instance where the search back tracks
      * @param start the vertex from which the search begins
      */
-    public void DFS(T start) {
-        if (adjList.size() == 0) {
-            return;
-        }
-
+    public UndirectedGraph<T> DFS(T start) {
+        UndirectedGraph<T> mst = new UndirectedGraph<>();
         HashMap<T, Boolean> visited = new HashMap<>();
-        StringBuilder compositeMessage = new StringBuilder();
         for (ArrayList<T> list: adjList) {
             visited.put(list.get(0), false);
         }
         
-        helperDFS(visited, start, start, compositeMessage);
-        System.out.println(compositeMessage.toString());
+        helperDFS(visited, start, start, mst);
+
+        return mst;
     }
 
     /**
@@ -193,10 +190,9 @@ public class UndirectedGraph<T> implements Graph<T> {
      *                all instances of backtracking.
      */
     private void helperDFS(HashMap<T, Boolean> visited, T current, T beginning,
-                           StringBuilder message) {
+                           UndirectedGraph<T> mst) {
         // Set current vertex as visited
         visited.put(current, true);
-        message.append(current.toString()).append(" ");
 
         ArrayList<T> listToTraverse = new ArrayList<T>();
         for (ArrayList<T> list: adjList) {
@@ -214,13 +210,10 @@ public class UndirectedGraph<T> implements Graph<T> {
         for (int ind = 1; ind < listToTraverse.size(); ind++) {
             T vertex = listToTraverse.get(ind);
             if (!visited.get(vertex)) {
-                helperDFS(visited, vertex, beginning, message);
+                mst.add(current, vertex);
+                helperDFS(visited, vertex, beginning, mst);
             }
         }
-
-        if (!current.equals(beginning))
-            message.append("backtrack ");
-        else message.append("End DFS");
     }
 
     /**
@@ -295,10 +288,14 @@ public class UndirectedGraph<T> implements Graph<T> {
         UndirectedGraph<Integer> g = new UndirectedGraph<>();
         g.add(1, 2);
         g.add(1, 3);
+        g.add(1, 5);
         g.add(2, 3);
         g.add(3, 4);
+        g.add(5, 4);
+        g.add(3, 5);
+        g.add(6, 3);
 
-        UndirectedGraph<Integer> mst = g.BFS(1);
+        UndirectedGraph<Integer> mst = g.DFS(1);
         System.out.println(g.toString());
         System.out.println("MINIMUM");
         System.out.println(mst.toString());
