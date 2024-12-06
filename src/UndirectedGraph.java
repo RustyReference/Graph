@@ -242,6 +242,14 @@ public class UndirectedGraph<T> implements Graph<T> {
         return sb.toString();
     }
 
+    /**
+     * Performs a bread-first-search traversal in the undirected grpah 
+     * starting at the specified vertex and returns a minimum spanning tree 
+     * containing the node specified. It may not include all the verticies 
+     * of the original graph if the original graph is not connected.
+     * @param start the specified vertex where the traversal begins
+     * @return a minimum spanning tree containing 'start'
+     */
     public UndirectedGraph<T> BFS(T start) {
         HashSet<T> visited = new HashSet<>();
         UndirectedGraph<T> mst = new UndirectedGraph<>(); // Minimum spanning tree as adjacency list
