@@ -3,10 +3,18 @@ package src;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import lib.BFSException;
 import lib.DFSException;
 
 public class DirectedGraph<T> implements Graph<T> {
     private ArrayList<ArrayList<T>> adjList;
+
+    /**
+     * Constructor that initializes an empty adjacency list
+     */
+    public DirectedGraph() {
+        adjList = new ArrayList<ArrayList<T>>();
+    }
 
     /**
      * Adds a one-way edge from the 'first' argument to the 'second'
@@ -59,20 +67,12 @@ public class DirectedGraph<T> implements Graph<T> {
             firstTemp.add(first);
             firstTemp.add(second);
             adjList.add(firstTemp);
-
-            // Note how no corresponding edge is added from second to first
-            secondTemp = new ArrayList<>();
-            secondTemp.add(second);
-            adjList.add(secondTemp);
         }
 
-        // If only the first is found in the list, then create a new list with 
-        // the second value and create an edge from the first to the second.
+        // If only the first is found in the list, then just add the second
+        // vertex to the first's list
         if (foundFirst) {
             firstTemp.add(second);
-            secondTemp = new ArrayList<>();
-            secondTemp.add(second);
-            adjList.add(secondTemp);
         }
 
         if (foundSecond) {
@@ -111,21 +111,17 @@ public class DirectedGraph<T> implements Graph<T> {
         }
     }
 
-    public void DFS(T start) {
-        HashMap<T, Boolean> visited = new HashMap<>();
-
-        for (ArrayList<T> list: adjList) {
-            visited.put(list.get(0), false);
-        }
+    public DirectedGraph<T> DFS(T start) {
+        DirectedGraph<T> mst = new DirectedGraph<>();
+        HashSet<T> visited = new HashSet<>();
         
-        StringBuilder result = new StringBuilder();
-        helperDFS(visited, start, start, result);
+        helperDFS(visited, start, mst);
+
+        return mst;
     }
 
-    private void helperDFS(HashMap<T, Boolean> visited, T curr, T beginning, 
-                           StringBuilder message) {
-        visited.put(curr, true);
-        message.append(curr.toString() + " ");
+    private void helperDFS(HashSet<T> visited, T curr, DirectedGraph<T> mst) {
+        visited.add(curr);
 
         ArrayList<T> travList = new ArrayList<>();
         for (ArrayList<T> list: adjList) {
@@ -135,24 +131,98 @@ public class DirectedGraph<T> implements Graph<T> {
             }
         }
 
+        // If there are no nodes to visit, then just proceed
+        // with other adjacent verticies
         if (travList.size() == 0) {
-            throw new DFSException(
-                "DirectedGraph: DFS traversal starting point does not exist.");
+            return;
         }
 
+        // For every neighbor N of current vertex:
         for (int i = 1; i < travList.size(); i++) {
             T adjVertex = travList.get(i);
-            if (!visited.get(curr)) {
-                helperDFS(visited, adjVertex, beginning, message);
+
+            // If N has not been visited, then add it to mst
+            // and traverse it's adjacencies
+            if (!visited.contains(adjVertex)) {
+                mst.add(curr, adjVertex);
+                helperDFS(visited, adjVertex, mst);
+            }
+        }
+    }
+
+    public DirectedGraph<T> BFS(T start) {
+        DirectedGraph<T> mst = new DirectedGraph<>();
+        HashSet<T> visited = new HashSet<>();
+        Queue<T> q = new LinkedList<>();
+        visited.add(start);
+        q.add(start);
+        
+        while(!q.isEmpty()) {
+            T top = q.remove();
+
+            ArrayList<T> trav = new ArrayList<>();
+            for (ArrayList<T> list: adjList) {
+                if (list.get(0).equals(top)) {
+                    trav = list;
+                }
+            }
+
+            if (trav.size() == 0)
+                continue;
+
+            for (T adj: trav) {
+                if (!visited.contains(adj)) {
+                    // Add to queue
+                    q.add(adj);
+
+                    // Add to minimum spanning tree
+                    mst.add(top, adj);
+
+                    // Mark as visited
+                    visited.add(adj);
+                }
             }
         }
 
-        if (!curr.equals(beginning)) 
-            message.append("backtrack ");
-        else message.append("END DFS");
+        return mst;
     }
 
-    public void BFS(T start) {
-        // Implement BFS
+    /**
+     * @return the adjacency list as a string
+     */
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+
+        for (ArrayList<T> list: adjList) {
+            sb.append(list.toString() + "\n");
+        }
+
+        return sb.toString();
+    }
+
+    public static void main (String... args) {
+        DirectedGraph<Integer> g = new DirectedGraph<>();
+
+        g.add(1, 2);
+        g.add(1, 3);
+        g.add(2, 3);
+        g.add(2, 4);
+        g.add(2, 5);
+        g.add(3, 4);
+        g.add(6, 7);
+        g.add(7, 8);
+
+        System.out.println(g + "\n\n");
+
+        DirectedGraph<Integer> mst = g.BFS(1);
+        DirectedGraph<Integer> mst2 = g.BFS(6);
+        System.out.println(mst.toString());
+        System.out.println(mst2.toString());
+
+        System.out.println("TIME FOR DFS:\n");
+        DirectedGraph<Integer> mstd = g.DFS(1);
+        DirectedGraph<Integer> mstd2 = g.DFS(6);
+        System.out.println(mstd.toString());
+        System.out.println(mstd2.toString());
     }
 }
