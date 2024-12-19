@@ -1,3 +1,11 @@
+/**
+ * @RustyReference
+ * Date: 12-19-2024
+ * An implementation of an undirected graph using an adjacencylist, complete
+ * with a DFS and BFS traversal and add/remove operations for edges and
+ * verticies.
+ */
+
 package src;
 
 import java.util.*;
@@ -174,7 +182,7 @@ public class UndirectedGraph<T> implements Graph<T> {
             visited.put(list.get(0), false);
         }
         
-        helperDFS(visited, start, start, mst);
+        helperDFS(visited, start, mst);
 
         return mst;
     }
@@ -189,7 +197,7 @@ public class UndirectedGraph<T> implements Graph<T> {
      * @param message the StringBuilder that contains all nodes visited
      *                all instances of backtracking.
      */
-    private void helperDFS(HashMap<T, Boolean> visited, T current, T beginning,
+    private void helperDFS(HashMap<T, Boolean> visited, T current,
                            UndirectedGraph<T> mst) {
         // Set current vertex as visited
         visited.put(current, true);
@@ -202,16 +210,11 @@ public class UndirectedGraph<T> implements Graph<T> {
             }
         }
 
-        if (listToTraverse.size() == 0) {
-            throw new DFSException(
-                "UndirectedGraph: DFS traversal starting point does not exist.");
-        }
-
         for (int ind = 1; ind < listToTraverse.size(); ind++) {
             T vertex = listToTraverse.get(ind);
             if (!visited.get(vertex)) {
                 mst.add(current, vertex);
-                helperDFS(visited, vertex, beginning, mst);
+                helperDFS(visited, vertex, mst);
             }
         }
     }
@@ -221,18 +224,6 @@ public class UndirectedGraph<T> implements Graph<T> {
      */
     public int size() {
         return adjList.size();
-    }
-
-    /**
-     * @return the graph as an adjacency list
-     */
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (ArrayList<T> list: adjList) {
-            sb.append(list.toString()).append("\n");
-        }
-
-        return sb.toString();
     }
 
     /**
@@ -246,12 +237,12 @@ public class UndirectedGraph<T> implements Graph<T> {
     public UndirectedGraph<T> BFS(T start) {
         HashSet<T> visited = new HashSet<>();
         UndirectedGraph<T> mst = new UndirectedGraph<>(); // Minimum spanning tree as adjacency list
-
+        
         Queue<T> q = new LinkedList<>();
-
+        
         q.add(start);
         visited.add(start);
-
+        
         while (!q.isEmpty()) {
             T top = q.remove();
             ArrayList<T> trav = new ArrayList<>();
@@ -260,44 +251,66 @@ public class UndirectedGraph<T> implements Graph<T> {
                     trav = list;
                 }
             }
-
-            if (trav.size() == 0) {
-                throw new BFSException("UndirectedGraph: BFS traversal starting point does not exist.");
-            }
-
+            
             for (T neighbor: trav) {
                 if (neighbor.equals(top)) 
-                    continue;
+                continue;
                 
                 if (!visited.contains(neighbor)) {
                     q.add(neighbor);
-
+                    
                     // Add edge from current to neighbor to MST
                     mst.add(top, neighbor);
-
+                    
                     // Mark neighbor as visited
                     visited.add(neighbor);
                 }
             }
         }
-
+        
         return mst;
     }
 
+    /**
+     * @return the graph as an adjacency list
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (ArrayList<T> list: adjList) {
+            sb.append(list.toString()).append("\n");
+        }
+
+        return sb.toString();
+    }
+    
     public static void main(String[] args) {
         UndirectedGraph<Integer> g = new UndirectedGraph<>();
         g.add(1, 2);
         g.add(1, 3);
-        g.add(1, 5);
         g.add(2, 3);
+        g.add(2, 4);
+        g.add(2, 5);
         g.add(3, 4);
-        g.add(5, 4);
-        g.add(3, 5);
-        g.add(6, 3);
+        g.add(7, 8);
+        g.add(7, 6);
+        g.add(6, 7);
+        g.add(6, 8);
 
         UndirectedGraph<Integer> mst = g.DFS(1);
+        UndirectedGraph<Integer> mstb = g.BFS(1);
         System.out.println(g.toString());
         System.out.println("MINIMUM");
         System.out.println(mst.toString());
+
+        System.out.println("BFS: ");
+        System.out.println(mstb.toString() + "\n");
+
+        g.deleteEdge(4, 3);
+        System.out.println("DFS: \n" + mst.toString());
+
+        System.out.println(g);
+
+        g.deleteVertex(2);
+        System.out.println(g);
     }
 }

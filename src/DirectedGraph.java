@@ -1,10 +1,5 @@
 package src;
-
-import java.lang.reflect.Array;
 import java.util.*;
-
-import lib.BFSException;
-import lib.DFSException;
 
 public class DirectedGraph<T> implements Graph<T> {
     private ArrayList<ArrayList<T>> adjList;
@@ -52,6 +47,18 @@ public class DirectedGraph<T> implements Graph<T> {
                              T first, T second,
                              ArrayList<T> firstTemp, ArrayList<T> secondTemp) 
                              throws IllegalArgumentException {
+/*
+        System.out.println("First: " + first + " Second " + second);
+        System.out.println("Found first: " + (foundFirst) + " found second " + foundSecond);
+ * 
+ System.out.println("\n Conditions");
+ System.out.println("11: " + (foundFirst && foundSecond));
+ System.out.println("00: " + (!foundFirst && !foundSecond));
+ System.out.println("10: " + (foundFirst && !foundSecond));
+ System.out.println("01: " + (!foundFirst && foundSecond));
+ System.out.println("\n");
+ */
+
         if (foundFirst && foundSecond) {
             if (!firstTemp.contains(second)) {
                 // If there isn't an edge already from first to second,
@@ -64,19 +71,35 @@ public class DirectedGraph<T> implements Graph<T> {
             // Add lists for first and second, but only give an edge from first
             // to second
             firstTemp = new ArrayList<>();
+            secondTemp = new ArrayList<>();
+
+            // Add values to the new lists
             firstTemp.add(first);
             firstTemp.add(second);
+            secondTemp.add(second);
+
+            // Add new lists to the adjList
             adjList.add(firstTemp);
+            adjList.add(secondTemp);
         }
 
         // If only the first is found in the list, then just add the second
         // vertex to the first's list
-        if (foundFirst) {
+        if (foundFirst && !foundSecond) {
+            // Add adjacency to first
             firstTemp.add(second);
+
+            // Create and add second vertex to adjList
+            secondTemp = new ArrayList<>();
+            secondTemp.add(second);
+            adjList.add(secondTemp);
         }
 
-        if (foundSecond) {
+        if (!foundFirst && foundSecond) {
+            // Create list with first value
             firstTemp = new ArrayList<>();
+
+            // Add value to first vertex and adjacency to second vertex
             firstTemp.add(first);
             firstTemp.add(second);
             adjList.add(firstTemp);
@@ -210,6 +233,7 @@ public class DirectedGraph<T> implements Graph<T> {
         g.add(2, 5);
         g.add(3, 4);
         g.add(6, 7);
+        g.add(6, 8);
         g.add(7, 8);
 
         System.out.println(g + "\n\n");
@@ -218,7 +242,6 @@ public class DirectedGraph<T> implements Graph<T> {
         DirectedGraph<Integer> mst2 = g.BFS(6);
         System.out.println(mst.toString());
         System.out.println(mst2.toString());
-
         System.out.println("TIME FOR DFS:\n");
         DirectedGraph<Integer> mstd = g.DFS(1);
         DirectedGraph<Integer> mstd2 = g.DFS(6);
